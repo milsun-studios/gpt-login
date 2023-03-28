@@ -1,0 +1,23 @@
+{
+  "id": "3982080",
+  "name": "openai",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "24347450",
+      "name": "openai",
+      "font_class": "openai",
+      "unicode": "e64b",
+      "unicode_decimal": 58955
+    },
+    {
+      "icon_id": "1462885",
+      "name": "close",
+      "font_class": "close",
+      "unicode": "e629",
+      "unicode_decimal": 58921
+    }
+  ]
+}
