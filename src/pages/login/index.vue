@@ -10,11 +10,19 @@
         :value="skey"
         @change="changeKey"
       />
-      <div
-        class="px-4 py-2 text-white select-none rounded mt-10 bg-purple-600 active:translate-y-1"
-        @click="loginByKey"
-      >
-        login
+      <div class="flex justify-center">
+        <div
+          class="px-4 py-2 text-white select-none rounded mt-10 bg-purple-600 active:translate-y-1"
+          @click="loginByKey"
+        >
+          login
+        </div>
+        <!-- <div
+          class="px-4 py-2 text-white select-none rounded mt-10 bg-purple-600 active:translate-y-1"
+          @click="loginByKey"
+        >
+          usage
+        </div> -->
       </div>
     </div>
 
@@ -27,7 +35,10 @@
   </div>
 </template>
 <script setup>
-import { watch } from 'vue'
+import { login } from '@/api/login'
+import { formatDate } from '@/utils/tools'
+
+import { watch, ref } from 'vue'
 
 let skey = ref('')
 let show = ref(false)
@@ -37,10 +48,26 @@ const changeKey = (e) => {
   skey.value = e.target.value
 }
 
-const loginByKey = () => {
-  show.value = true
+// const datec = () => {
+//   const now = new Date()
+//   const old = new Date()
+//   old.setDate(now.getDate() - 90)
+
+//   let a = formatDate(now)
+//   let b = formatDate(old)
+//   console.log(a, b)
+// }
+// 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
+const loginByKey = async () => {
   if (skey.value) {
+    let res = await login({
+      openapiKey: skey.value,
+    })
+    show.value = true
+    console.log(res, 'dd')
+    showText.value = res.msg
   } else {
+    show.value = true
     showText.value = 'the key can not be null! '
   }
 }

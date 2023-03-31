@@ -1,8 +1,11 @@
 import axios from "axios";
 
 const http = axios.create({
-  baseURL: process.env.VITE_API_BASE_URL,
+  baseURL: import.meta.env.VITE_API_BASE_URL + "/mschat",
   timeout: 50000,
+  headers: {
+    "Content-Type": "application/x-www-form-urlencoded",
+  },
 });
 
 // 错误处理函数
@@ -29,10 +32,10 @@ function successHandle(response) {
   switch (response.status) {
     case 200:
       //
-      return response.data;
+      return Promise.resolve(response.data);
     // ....
     default:
-      return;
+      return response.data;
   }
 }
 // 请求拦截器
@@ -50,7 +53,7 @@ http.interceptors.request.use(
 
 http.interceptors.response.use(
   (response) => {
-    successHandle(response);
+    return successHandle(response);
   },
   (err) => {
     errorHandle(err);

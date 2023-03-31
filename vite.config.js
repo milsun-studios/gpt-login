@@ -33,7 +33,7 @@ export default defineConfig({
     extensions: [".mjs", ".js", ".json", ".vue"],
   },
   build: {
-    outDir: "admin",
+    outDir: "dist",
   },
   plugins: [
     vue(),
@@ -124,11 +124,11 @@ export default defineConfig({
     host: "127.0.0.1",
     port: 5000,
     proxy: {
-      "/dev": {
+      "/mechat": {
         // 开发地址，请换成正式地址
-        target: "http://127.0.0.1:5000",
+        target: "http://43.153.30.133",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/dev/, ""),
+        rewrite: (path) => path.replace(/^\/mechat/, ""),
       },
       // '/test': { // 测试地址
       //   target: 'http://127.0.0.1:9999',

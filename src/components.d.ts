@@ -11,9 +11,5 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    VanButton: typeof import('vant/es')['Button']
-    VanImage: typeof import('vant/es')['Image']
-    VanPopup: typeof import('vant/es')['Popup']
-    VanToast: typeof import('vant/es')['Toast']
   }
 }
