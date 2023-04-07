@@ -1,6 +1,6 @@
 export default [
   {
-    path: "/login",
+    path: "/",
     name: "login",
     component: () => import("@/pages/login/index.vue"), //.vue可以省略
   },

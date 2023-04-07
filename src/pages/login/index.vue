@@ -12,17 +12,23 @@
       />
       <div class="flex justify-center">
         <div
-          class="px-4 py-2 text-white select-none rounded mt-10 bg-purple-600 active:translate-y-1"
+          class="px-4 py-2 text-white select-none rounded mt-10 mr-10 bg-purple-600 active:translate-y-1"
           @click="loginByKey"
         >
           login
         </div>
-        <!-- <div
-          class="px-4 py-2 text-white select-none rounded mt-10 bg-purple-600 active:translate-y-1"
-          @click="loginByKey"
+        <div
+          class="px-4 py-2 text-white select-none rounded mt-10 mr-10 bg-purple-600 active:translate-y-1"
+          @click="usageByKey"
         >
           usage
-        </div> -->
+        </div>
+        <div
+          class="px-4 py-2 text-white select-none rounded mt-10 bg-purple-600 active:translate-y-1"
+          @click="getChat"
+        >
+          chat
+        </div>
       </div>
     </div>
 
@@ -35,29 +41,35 @@
   </div>
 </template>
 <script setup>
-import { login } from '@/api/login'
+import { login, usage } from '@/api/login'
+import { chat } from '@/api/ai'
+import { EventSourcePolyfill } from 'event-source-polyfill'
+
 import { formatDate } from '@/utils/tools'
 
-import { watch, ref } from 'vue'
+import { watch, ref, computed, reactive } from 'vue'
 
 let skey = ref('')
 let show = ref(false)
 let showText = ref('')
+let source = reactive()
 
+// skey.value = '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'
 const changeKey = (e) => {
   skey.value = e.target.value
 }
 
-// const datec = () => {
-//   const now = new Date()
-//   const old = new Date()
-//   old.setDate(now.getDate() - 90)
+const timeStream = computed(() => {
+  const now = new Date()
+  const old = new Date()
+  old.setDate(now.getDate() - 90)
+  return {
+    now: formatDate(now),
+    old: formatDate(old),
+  }
+})
 
-//   let a = formatDate(now)
-//   let b = formatDate(old)
-//   console.log(a, b)
-// }
-// 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
+// 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
 const loginByKey = async () => {
   if (skey.value) {
     let res = await login({
@@ -70,6 +82,47 @@ const loginByKey = async () => {
     show.value = true
     showText.value = 'the key can not be null! '
   }
+}
+
+const usageByKey = async () => {
+  if (skey.value) {
+    console.log(timeStream, 'www')
+    let res = await usage({
+      startDate: timeStream.value.now,
+      endDate: timeStream.value.old,
+      openapiKey: skey.value,
+    })
+    show.value = true
+    showText.value = res.msg
+  } else {
+    show.value = true
+    showText.value = 'the key can not be null! '
+  }
+}
+
+const getChat = () => {
+  source = new EventSourcePolyfill(
+    'http://43.153.30.133:8989/mschat/chatstream?message=你好&openapiKey=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',
+    {
+      Headers: { uid: 123 },
+    },
+  )
+
+  source.onopen = (e) => {
+    console.log(e)
+  }
+  source.addEventListener('message', function (data) {
+    console.log(data, 'data')
+  })
+
+  source.onerror = function (event) {
+    // handle error event
+    console.log(event, 'www')
+  }
+
+  console.log(source, 'ss')
+
+  // source.close()
 }
 
 watch(show, () => {

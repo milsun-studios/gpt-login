@@ -24,6 +24,9 @@ import {
 
 export default defineConfig({
   base: "./",
+  build: {
+    outDir: "openai",
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "src"),
@@ -31,9 +34,6 @@ export default defineConfig({
     },
     // 在最后加上 .vue
     extensions: [".mjs", ".js", ".json", ".vue"],
-  },
-  build: {
-    outDir: "dist",
   },
   plugins: [
     vue(),
@@ -122,13 +122,13 @@ export default defineConfig({
   },
   server: {
     host: "127.0.0.1",
-    port: 5000,
+    port: 3000,
     proxy: {
-      "/mechat": {
+      "/mschat": {
         // 开发地址，请换成正式地址
         target: "http://43.153.30.133",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/mechat/, ""),
+        rewrite: (path) => path.replace(/^\/mschat/, ""),
       },
       // '/test': { // 测试地址
       //   target: 'http://127.0.0.1:9999',
@@ -140,11 +140,11 @@ export default defineConfig({
       //   changeOrigin: true,
       //   rewrite: (path) => path.replace(/^\/production/, '')
       // },
-      "/second": {
+      "/v1": {
         // 配置第二域名接口地址，实现网站多域名接口地址开发，前往/axios/apiNames查看区别
-        target: "http://127.0.0.1:9999",
+        target: "https://api.openai.com",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/second/, ""),
+        rewrite: (path) => path.replace(/^\/v1/, ""),
       },
     },
   },

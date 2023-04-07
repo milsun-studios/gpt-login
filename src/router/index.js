@@ -9,6 +9,7 @@ import { createRouter, createWebHashHistory } from "vue-router";
  * 整合 ./routes 文件
  */
 let routesFiles = import.meta.globEager(`./routes/*.js`);
+
 const getRoutes = () => {
   let defs = [];
   let defout = [];

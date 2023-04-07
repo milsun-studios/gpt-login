@@ -2,8 +2,8 @@
 const routes = [
   {
     path: "/",
-    name: "home",
-    component: () => import("@/pages/home/index.vue"), //.vue可以省略
+    name: "login",
+    component: () => import("@/pages/login/index.vue"), //.vue可以省略
   },
 ];
 export default routes;

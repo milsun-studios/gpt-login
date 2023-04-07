@@ -1,10 +1,10 @@
 import axios from "axios";
 
 const http = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL + "/mschat",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   timeout: 50000,
   headers: {
-    "Content-Type": "application/x-www-form-urlencoded",
+    "Content-Type": "x-www-form-urencoded",
   },
 });
 
