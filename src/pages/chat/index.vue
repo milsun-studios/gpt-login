@@ -1,14 +1,17 @@
 <template>
-  <div class="chat">
-    <div class="flex fixed bottom-0 w-2/4 p-5">
-      <input
-        class="border w-auto rounded mr-2"
-        type="text"
-        :value="message"
-        @change="changeMsg"
-      />
+  <div class="chat flex justify-center">
+    <div class="fixed bottom-0 p-5 w-full grid grid-clos-3">
+      <div class="col-span-2">
+        <input
+          class="border rounded mr-2"
+          type="text"
+          :value="message"
+          @change="changeMsg"
+        />
+      </div>
+
       <div
-        class="px-4 py-2 flex-grow-0 text-white select-none rounded bg-purple-600 active:translate-y-1"
+        class="px-4 py-2 col-span-1 text-white select-none rounded bg-purple-600 active:translate-y-1"
         @click="getChat"
       >
         chat
