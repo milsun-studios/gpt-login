@@ -1,6 +1,8 @@
 <script setup>
 import axios from "axios";
 import { reactive, ref } from "vue";
+import MarkdownIt from "markdown-it";
+const md = new MarkdownIt();
 const queryTimer = ref();
 
 const data = reactive({
@@ -11,6 +13,8 @@ const data = reactive({
   time: 10000,
   message: "",
   baseImg: "",
+  promptEn: "",
+  descprompt: "",
   load: false,
   promptGroup: [
     {
@@ -32,7 +36,7 @@ async function postProxyMjs(groupItem) {
 
   const params = {
     notifyHook: "",
-    boot: groupItem.boot,
+    boot: "niji",
     base64: groupItem.baseImg,
     prompt: groupItem.prompt,
     state: "",
@@ -145,6 +149,8 @@ function queryImgByTime() {
         clearTimeout(queryTimer.value);
         data.load = false;
         data.imgUrls = res.data.imageUrls;
+        data.promptEn = res.data.promptEn;
+        data.descprompt = res.data.prompt;
       } else {
         queryTimer.value = setTimeout(() => {
           queryImgByTime();
@@ -187,6 +193,38 @@ function getBaseImg(ww) {
   };
 }
 
+async function postDescribe(boot = "mj") {
+  console.log(123, boot);
+  data.message = "";
+  if (!data.baseImg) return;
+
+  const params = {
+    base64: data.baseImg,
+    boot,
+    notifyHook: "",
+    state: "",
+  };
+  const res = await axios
+    .create({
+      baseURL: import.meta.env.PROD ? import.meta.env.VITE_APP_API_MJ_URL : "",
+    })
+    .post("/mj/submit/describe", params, {
+      headers: {
+        Accept: "application/json",
+      },
+    })
+    .catch((err) => {
+      console.log(err, "iserror");
+    });
+
+  console.log(res, "from mj java");
+  if (res.data.code === 1) {
+    data.load = true;
+    data.taskid = res.data.result;
+    queryImgByTime();
+  }
+}
+
 const downloadCodeImg = (img) => {
   var a = document.createElement("a");
   a.download = name || "ecommerce_resimg";
@@ -212,23 +250,28 @@ const handleCutItem = (i) => {
 </script>
 
 <template>
-  <h1 class="text-[20px] mx-[20px]">MJ</h1>
-  <!-- <div class="m-[50px] flex justify-center">
+  <h1 class="text-[20px] mx-[20px]">NiJi</h1>
+
+  <div>
+    <h1>Describe</h1>
     <div>
-      <span>垫图(可选): </span>
       <input
         type="file"
         accept="image/png, image/jpeg, image/gif, image/jpg"
         @change="getBaseImg"
       />
+      <div
+        class="bg-slate-500 w-[150px] text-white p-[5px] rounded-md cursor-pointer"
+        @click="postDescribe('niji')"
+      >
+        submit
+      </div>
+
+      <div class="w-[400px]">
+        <p v-html="md.render(data.descprompt)"></p>
+      </div>
     </div>
-    <img
-      class="w-[100px] h-[100px]"
-      v-if="data.baseImg"
-      :src="data.baseImg"
-      alt=""
-    />
-  </div> -->
+  </div>
   <div class="mt-[10px] mx-[20px]">
     <span
       class="bg-slate-500 text-white p-[5px] rounded-md cursor-pointer"
@@ -236,26 +279,8 @@ const handleCutItem = (i) => {
       >add list</span
     >
   </div>
-  <div
-    class="w-full flex m-[20px] g-item"
-    v-for="(gitem, gi) of data.promptGroup"
-  >
-    <van-radio-group v-model="gitem.boot" class="w-[100px]">
-      <van-cell-group inset>
-        <van-cell title="Mj" clickable @click="gitem.boot = 'mj'">
-          <template #right-icon>
-            <van-radio name="mj" />
-          </template>
-        </van-cell>
-        <van-cell title="Niji" clickable @click="gitem.boot = 'niji'">
-          <template #right-icon>
-            <van-radio name="niji" />
-          </template>
-        </van-cell>
-      </van-cell-group>
-    </van-radio-group>
-
-    <div class="flex w-[200px]">
+  <div class="w-full flex m-[20px]" v-for="(gitem, gi) of data.promptGroup">
+    <div class="flex w-[300px]">
       <div
         class="text-white bg-slate-500 px-[5px] flex items-center"
         @click="handleCutItem(gi)"
@@ -302,9 +327,4 @@ const handleCutItem = (i) => {
     {{ data.message }}
   </p>
 </template>
-
-<style lang="less">
-:root:root {
-  --van-radio-size: 10px;
-}
-</style>
+p
